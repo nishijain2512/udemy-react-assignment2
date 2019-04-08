@@ -1,13 +1,32 @@
 import React, { Component } from 'react';
 import './App.css';
+import Validation from './Validation/Validation';
+import Char from './Char/char';
+
 
 class App extends Component {
+  state = {
+    userInput: ''
+  } 
 
-  textLengthCalculator = (event) => {
-    const length = event.target.value.length;
-    console.log(`${length} characters entered.`);
+  userInputHandler = (event) => {
+    this.setState({userInput: event.target.value});
   };
+
+  deleteCharacterHandler = (index) => {
+    const text = this.state.userInput.split('');
+    text.splice(index, 1);
+    const updatedText = text.join('');
+    this.setState({userInput: updatedText});
+  };
+
   render() {
+    const characterList = this.state.userInput.split('').map((character, index) => {
+      return <Char 
+      click={() => this.deleteCharacterHandler(index)}
+      character={character}/>
+    });
+
     return (
       <div className="App">
           <h1 className="header1">Assignment 2</h1>
@@ -20,8 +39,14 @@ class App extends Component {
             <li>When you click a CharComponent, it should be removed from the entered text.</li>
         </ol>
         <p>Hint: Keep in mind that JavaScript strings are basically arrays!</p>
-
-        <input type='text' onChange={this.textLengthCalculator} />
+        <hr />
+        <input 
+          type='text' 
+          onChange={this.userInputHandler} 
+          value={this.state.userInput}/>
+          <p>{this.state.userInput}</p>
+        <Validation inputLength={this.state.userInput.length}/>
+        {characterList}
       </div>
     );
   }
